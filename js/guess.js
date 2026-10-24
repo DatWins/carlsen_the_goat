@@ -9,20 +9,24 @@
   function label(ply, san) { return ply % 2 === 0 ? moveNo(ply) + "." + san : moveNo(ply) + "..." + san; }
   function norm(s) { return s.replace(/[\s+#!?()=\/x:\-]/gi, "").replace(/0/g, "O").replace(/e\.?p\.?$/i, ""); }
 
-  function drawBoard(el, fen, last) {
+  function drawBoard(el, fen, last, flip) {
     el.innerHTML = "";
-    fen.split(" ")[0].split("/").forEach(function (row, r) {
-      var f = 0;
+    var ranks = fen.split(" ")[0].split("/");
+    if (flip) ranks = ranks.slice().reverse();
+    ranks.forEach(function (row, r) {
+      var files = [];
       for (var i = 0; i < row.length; i++) {
         var ch = row[i];
-        if (/\d/.test(ch)) { for (var k = 0; k < +ch; k++) addSq(el, r, f++, null, last); }
-        else addSq(el, r, f++, ch, last);
+        if (/\d/.test(ch)) { for (var k = 0; k < +ch; k++) files.push(null); }
+        else files.push(ch);
       }
+      if (flip) files = files.reverse();
+      files.forEach(function (piece, f) { addSq(el, r, f, piece, last, flip); });
     });
   }
-  function addSq(el, r, f, piece, last) {
+  function addSq(el, r, f, piece, last, flip) {
     var d = document.createElement("div");
-    var name = "abcdefgh"[f] + (8 - r);
+    var name = (flip ? "hgfedcba" : "abcdefgh")[f] + (flip ? r + 1 : 8 - r);
     d.className = "gtm-sq " + ((r + f) % 2 ? "d" : "l") + (last && (last.from === name || last.to === name) ? " last" : "");
     if (piece) {
       var img = document.createElement("img");
@@ -37,6 +41,7 @@
     var q = function (sel) { return root.querySelector(sel); };
     var MOVES = GAME.moves.trim().split(/\s+/);
     var mine = GAME.side === "w";
+    var flip = !mine;
     var SIDE = mine ? "White" : "Black", OPP = mine ? "Black" : "White";
     var plies = [];
     for (var p = GAME.startPly; p < MOVES.length; p++) if ((p % 2 === 0) === mine) plies.push(p);
@@ -79,7 +84,7 @@
       var soFar = pars.slice(0, Math.min(step, plies.length)).reduce(function (a, b) { return a + b; }, 0);
       q(".gtm-scoreof").textContent = "points · par so far " + soFar + " of " + MAX;
       rows();
-      if (q(".gtm-showlive").checked) drawBoard(q(".gtm-liveboard"), chess.fen(), lastMove);
+      if (q(".gtm-showlive").checked) drawBoard(q(".gtm-liveboard"), chess.fen(), lastMove, flip);
     }
 
     function rows() {
@@ -158,7 +163,7 @@
       step = 0; wrong = 0; points = []; hinted = false; hintedMoves = [];
       q(".gtm-done").hidden = true; q(".gtm-hintbox").hidden = true; say("", ""); q(".gtm-guess").value = "";
       try { var b = localStorage.getItem(KEY); q(".gtm-best").textContent = b ? "· your best " + b : ""; } catch (e) {}
-      drawBoard(q(".gtm-startboard"), chess.fen(), lastMove);
+      drawBoard(q(".gtm-startboard"), chess.fen(), lastMove, flip);
       render();
     }
 
@@ -173,7 +178,7 @@
       if (step >= plies.length || hinted) return;
       hinted = true; hintedMoves[step] = true;
       say("Here is the board. 1 point comes off this move's score when you find it.", "info");
-      drawBoard(q(".gtm-hintboard"), chess.fen(), lastMove);
+      drawBoard(q(".gtm-hintboard"), chess.fen(), lastMove, flip);
       q(".gtm-hintbox").hidden = false;
       render(); q(".gtm-guess").focus();
     });
