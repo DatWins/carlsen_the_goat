@@ -1,0 +1,16 @@
+{{- /* List the games of one opening group. Usage: {{< games group="1.e4 e5" >}} */ -}}
+{{- $want := .Get "group" -}}
+{{- $list := slice -}}
+{{- range where site.RegularPages "Section" "games" -}}
+  {{- if eq (partial "opening-group.html" .) $want }}{{ $list = $list | append . }}{{ end -}}
+{{- end -}}
+{{- if $list }}
+<ul class="game-list">
+{{- range sort $list "Params.year" }}
+  {{- $n := len (split (trim (string .Params.moves) " ") " ") }}
+  <li><a href="{{ .RelPermalink }}"><span class="t">{{ .Title }}</span><span class="m">{{ .Params.opening }} · {{ .Params.where }} · {{ div (add $n 1) 2 }} moves</span></a></li>
+{{- end }}
+</ul>
+{{- else }}
+<p><em>Games coming soon.</em></p>
+{{- end }}

@@ -1,0 +1,7 @@
+{{- /* Which menu a game belongs to, from its first two moves. Returns the menu title. */ -}}
+{{- $mv := split (trim (string .Params.moves) " ") " " -}}
+{{- $a := index $mv 0 -}}{{- $b := cond (gt (len $mv) 1) (index $mv 1) "" -}}
+{{- $g := "Other Openings" -}}
+{{- if eq $a "e4" }}{{ $g = cond (eq $b "e5") "1.e4 e5" "1.e4 Others" }}{{ end -}}
+{{- if eq $a "d4" }}{{ $g = cond (eq $b "d5") "1.d4 d5" "1.d4 Others" }}{{ end -}}
+{{- return $g -}}

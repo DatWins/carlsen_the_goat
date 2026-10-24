@@ -1,0 +1,38 @@
+baseURL = "https://datwins.github.io/carlsen_the_goat/"
+
+disableKinds = ["section", "taxonomy", "term", "RSS", "robotsTXT"]
+
+defaultContentLanguage = "en"
+
+theme = "hugo-scroll"
+
+title = "Carlsen the GOAT – Guess the Move"
+
+enableGitInfo = true
+enableEmoji = true
+
+[params]
+    favicon = "images/favicon.png"
+    images = ["images/cover-image.jpg"]
+    title_guard = true
+    title = "Carlsen the GOAT"
+    description = "Play through Magnus Carlsen's historic unbeaten streak — find his moves, one at a time, and score against par"
+    language_menu = false
+    show_current_lang = false
+    hidedesignbyline = false
+    invertSectionColors = false
+    image_options = "webp q90 lanczos photo"
+    combine_page_and_site_title = false
+
+    [params.footer]
+    showContactIcons = true
+    showFooterLinks = false
+
+[languages]
+  [languages.en]
+    weight = 10
+    languageName = "English"
+    contentDir = "content/en"
+
+[markup.goldmark.renderer]
+  unsafe = true
