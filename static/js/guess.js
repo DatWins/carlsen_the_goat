@@ -160,6 +160,11 @@
     function start() {
       chess = new Chess(); lastMove = null;
       for (var p = 0; p < GAME.startPly; p++) lastMove = chess.move(MOVES[p]);
+      // If the first move to guess is not immediately after startPly,
+      // play the opponent's move(s) in between so the engine is in the right position.
+      if (plies.length > 0 && plies[0] > GAME.startPly) {
+        for (var p = GAME.startPly; p < plies[0]; p++) lastMove = chess.move(MOVES[p]);
+      }
       step = 0; wrong = 0; points = []; hinted = false; hintedMoves = [];
       q(".gtm-done").hidden = true; q(".gtm-hintbox").hidden = true; say("", ""); q(".gtm-guess").value = "";
       try { var b = localStorage.getItem(KEY); q(".gtm-best").textContent = b ? "· your best " + b : ""; } catch (e) {}
