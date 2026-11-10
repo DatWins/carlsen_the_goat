@@ -84,6 +84,7 @@
       q(".gtm-scoreof").textContent = "points · par so far " + soFar + " of " + MAX;
       rows();
       if (q(".gtm-showlive").checked) drawBoard(q(".gtm-liveboard"), chess.fen(), lastMove, !mine);
+      if (!q(".gtm-hintbox").hidden) drawBoard(q(".gtm-hintboard"), chess.fen(), lastMove, !mine);
     }
 
     function rows() {
