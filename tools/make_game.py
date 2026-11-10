@@ -58,8 +58,13 @@ def make_page(game, a, name=None):
     place = (h.get("Event") or h.get("Site") or "").replace("?", "").strip()
     where = ", ".join(x for x in (place, year) if x)
     opening = h.get("Opening") or h.get("ECO", "")
-    name = name or f"{surname(white)}-{surname(black)}"
-    out = pathlib.Path("content/en/games") / name
+    base = name or f"{surname(white)}-{surname(black)}"
+    out = pathlib.Path("content/en/games") / base
+    if out.exists() and not name:
+        n = 2
+        while (pathlib.Path("content/en/games") / f"{base}-{n}").exists():
+            n += 1
+        out = pathlib.Path("content/en/games") / f"{base}-{n}"
     out.mkdir(parents=True, exist_ok=True)
     ending = "checkmate" if board.is_checkmate() else "resignation"
     me = "White" if side == "w" else "Black"
