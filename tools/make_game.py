@@ -4,6 +4,7 @@ Usage (Windows, from the repo folder):
     py tools\make_game.py mygame.pgn
     py tools\make_game.py mygame.pgn --start 7 --side b
     py tools\make_game.py many_games.pgn --all --source "Bruce Pandolfini, *Pandolfini's Solitaire Chess*"
+    py tools\make_game.py carlsen.pgn --all --hero Carlsen
 
   --start   how many half-moves (plies) are shown before the guessing starts.
             6 = after 1.e4 e5 2.Nf3 d6 3.d4 f5. Default: the game's [PliesShown]
@@ -42,7 +43,16 @@ def make_page(game, a, name=None):
     for m in game.mainline_moves():
         sans.append(board.san(m)); board.push(m)
     start = a.start if a.start is not None else int(h.get("PliesShown", 6))
-    side = a.side or ("b" if h.get("Result") == "0-1" else "w")
+    black_name = h.get("Black", "").lower()
+    white_name = h.get("White", "").lower()
+    if a.side:
+        side = a.side
+    elif a.hero and a.hero.lower() in black_name:
+        side = "b"
+    elif a.hero and a.hero.lower() in white_name:
+        side = "w"
+    else:
+        side = "b" if h.get("Result") == "0-1" else "w"
     plies = [p for p in range(start, len(sans)) if (p % 2 == 0) == (side == "w")]
     if not plies:
         print(f"skipped {h.get('White')} - {h.get('Black')}: no moves left to guess"); return
@@ -96,6 +106,7 @@ def main():
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--name")
     ap.add_argument("--source", default="")
+    ap.add_argument("--hero", default="", help="Player name to always follow (e.g. Carlsen). Overrides win/loss side detection.")
     a = ap.parse_args()
     with open(a.pgn, encoding="utf-8", errors="replace") as f:
         while True:
