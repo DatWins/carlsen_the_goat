@@ -42,17 +42,26 @@ When it goes green, your site is live.
 
 ---
 
-## Step 3 — Update hugo.toml
+## Step 3 — Update the Hero Heading
 
-Open `hugo.toml` in your repo and change these two lines to match your new site:
+Open `content/en/_index.md` and change these two lines:
 
-```toml
-[params]
-    title = "Your Site Title Here"
-    description = "What your site is about"
+```
+header_headline: "Your Title Here"
+header_subheadline: "Your subtitle here."
 ```
 
-The `baseURL` at the top is already set correctly by GitHub Actions, so leave that alone.
+This controls the big heading and description visitors see at the top of the site.
+
+## Step 4 — Update hugo.toml (optional)
+
+Open `hugo.toml` and update the browser tab title if you want:
+
+```toml
+title = "Your Site Name – Guess the Move"
+```
+
+The `baseURL` is already set correctly by GitHub Actions, so leave that alone.
 
 ---
 
