@@ -42,7 +42,30 @@ When it goes green, your site is live.
 
 ---
 
-## Step 3 — Update the Hero Heading
+## Step 3 — Clear Out the Template Games
+
+The template includes sample games in `content/en/games/`. Delete them all before adding your own.
+
+In your terminal (from the repo folder), run:
+
+```
+git rm -r content/en/games/
+git commit -m "Remove template games"
+git push
+```
+
+Then add your own PGN to `tools/` and run the script:
+
+```
+py tools\make_game.py tools\yourfile.pgn --all
+git add content/en/games/
+git commit -m "Add my games"
+git push
+```
+
+---
+
+## Step 4 — Update the Hero Heading
 
 Open `content/en/_index.md` and change these two lines:
 
@@ -53,7 +76,7 @@ header_subheadline: "Your subtitle here."
 
 This controls the big heading and description visitors see at the top of the site.
 
-## Step 4 — Update hugo.toml (optional)
+## Step 5 — Update hugo.toml (optional)
 
 Open `hugo.toml` and update the browser tab title if you want:
 
